@@ -1,36 +1,52 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import * as saveAs from 'file-saver';
 
 export type data = {
-  date: string,
-  money: number,
-  text: string
-}
+  date: string;
+  money: number;
+  text: string;
+};
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
   public message = '';
   public dataArray: data[] = [];
   public commonArray: data[] = [];
 
+  @ViewChild('data') data!: HTMLInputElement;
+
+  constructor() {}
+
   ngOnInit(): void {
     this.initArrays();
   }
 
-  public clicked(data: string) {
-    this.seperateValues(data);
+  fileUpload(file: any) {
+    let fileString = '';
+
+    let reader = new FileReader();
+    reader.onloadend = (e) => {
+      fileString = reader.result as string;
+      console.log(reader.result);
+    };
+    reader.readAsText(file?.target?.files[0]);
+    setTimeout(() => {
+      this.seperateValues(fileString);
+    }, 2000);
   }
 
   public export() {
     this.filterCommonFields();
     const totalArray = this.commonArray.concat(this.dataArray);
-    let blob = new Blob([this.convertToCSV(totalArray)], { type: "text/csv;charset=utf-8" });
-    saveAs(blob, "file.csv");
-    this.initArrays()
+    let blob = new Blob([this.convertToCSV(totalArray)], {
+      type: 'text/csv;charset=utf-8',
+    });
+    saveAs(blob, 'file.csv');
+    this.initArrays();
   }
 
   private seperateValues(data: string) {
@@ -39,44 +55,53 @@ export class AppComponent implements OnInit {
     do {
       const dateIndex = str.search(/\d\d\/\d\d/);
       const dateValue = str.match(/\d\d\/\d\d/);
-      const dateLength = dateValue && dateValue[0].length || 0;
+      const dateLength = (dateValue && dateValue[0].length) || 0;
 
-      const moneyIndex = str.search(/\d{1,}\.\d\d/)
+      const moneyIndex = str.search(/\d{1,}\.\d\d/);
       const moneyValue = str.match(/\d{1,}\.\d\d/);
-      const moneyLength = moneyValue && moneyValue[0].length || 0;
+      const moneyLength = (moneyValue && moneyValue[0].length) || 0;
 
       let currDate = str.substring(0, dateIndex + dateLength).trim();
-      let currMoney = str.substring(dateIndex + dateLength, moneyIndex + moneyLength).trim();
+      let currMoney = str
+        .substring(dateIndex + dateLength, moneyIndex + moneyLength)
+        .trim();
       str = str.substring(moneyIndex - 1);
 
       const secondDateIndex = str.search(/\d\d\/\d\d/);
-      let currName = secondDateIndex !== -1 ?
-        str.substring(moneyIndex + moneyLength, secondDateIndex).trim() :
-        str.substring(moneyIndex + moneyLength).trim()
+      let currName =
+        secondDateIndex !== -1
+          ? str.substring(moneyIndex + moneyLength, secondDateIndex).trim()
+          : str.substring(moneyIndex + moneyLength).trim();
 
       str = str.substring(secondDateIndex);
 
-      this.dataArray.push({ date: currDate, money: Number(currMoney), text: currName })
+      this.dataArray.push({
+        date: currDate,
+        money: Number(currMoney),
+        text: currName,
+      });
       if (index === 100) {
-        this.message = 'Error!'
-        setTimeout((() => this.message = ''), 1000);
+        this.message = 'Error!';
+        setTimeout(() => (this.message = ''), 1000);
         break;
       }
       if (secondDateIndex === -1) {
-        this.message = 'Added!'
-        setTimeout((() => this.message = ''), 1000);
+        this.message = 'Added!';
+        setTimeout(() => (this.message = ''), 1000);
         break;
       }
-      index++
+      index++;
     } while (true);
   }
 
   private convertToCSV(arr: any) {
-    const array = [Object.keys(arr[0])].concat(arr)
+    const array = [Object.keys(arr[0])].concat(arr);
 
-    return array.map(it => {
-      return Object.values(it).toString()
-    }).join('\n')
+    return array
+      .map((it) => {
+        return Object.values(it).toString();
+      })
+      .join('\n');
   }
 
   private filterCommonFields() {
@@ -164,21 +189,21 @@ export class AppComponent implements OnInit {
         case text.includes('culver'):
         case text.includes('buffalo wild wings'):
         case text.includes('hamburgers'):
-          case text.includes('tropical smoothie cafe'):
-          case text.includes('kfc'):
+        case text.includes('tropical smoothie cafe'):
+        case text.includes('kfc'):
           this.commonArray[9].money += value.money;
           remove = true;
           break;
 
         case text.includes('pet supplies'):
-          case text.includes('petco'):
-            case text.includes('city pets'):
+        case text.includes('petco'):
+        case text.includes('city pets'):
           this.commonArray[10].money += value.money;
           remove = true;
           break;
 
         case text.includes('rave'):
-          case text.includes('cinemark'):
+        case text.includes('cinemark'):
           this.commonArray[11].money += value.money;
           remove = true;
           break;
@@ -208,14 +233,13 @@ export class AppComponent implements OnInit {
           break;
       }
       if (remove) {
-        this.dataArray[i].text = '-'
+        this.dataArray[i].text = '-';
       }
     });
 
     this.dataArray = this.dataArray.filter((data) => {
       return data.text !== '-';
     });
-
   }
 
   private initArrays() {
@@ -237,7 +261,7 @@ export class AppComponent implements OnInit {
       { date: '', money: 0, text: 'Haircut' },
       { date: '', money: 0, text: 'Medicine' },
       { date: '', money: 0, text: 'Paycheck' },
-    ]
+    ];
     this.dataArray = [];
     this.message = '';
   }
