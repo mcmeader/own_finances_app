@@ -20,36 +20,37 @@ export class WithdrawalService {
     const endIndex = data.indexOf(
       `Banking/Debit Card Withdrawals and Purchases continued on next page`
     );
-    const endIndex2 = data.indexOf(`Daily Balance Detail`);
+    const endIndex2 = data.indexOf(`Online and Electronic Banking Deductions`);
     let returnValues = ['', '', true];
     if (endIndex !== -1) {
       returnValues = [
-        data.substring(startIndex + 24, endIndex),
-        data.substring(endIndex + 68),
+        data.substring(startIndex + 24, endIndex).trim(),
+        data.substring(endIndex + 68).trim(),
         false,
       ];
     } else {
       returnValues = [
-        data.substring(startIndex + 24, endIndex2),
-        data.substring(endIndex2 + 21),
+        data.substring(startIndex + 24, endIndex2).trim(),
+        data.substring(endIndex2 + 41).trim(),
         true,
       ];
     }
     return returnValues;
   }
 
-  parseWithdrawals() {
+  parseWithdrawals(deposits: string) {
     let dataArray = [];
     let message;
-    let str = this.withdrawals;
+    let str = deposits + this.withdrawals;
     let index = 0;
+    console.log('fff', str);
     do {
       const dateIndex = str.search(/\d\d\/\d\d\ /);
       const dateValue = str.match(/\d\d\/\d\d\ /);
       const dateLength = (dateValue && dateValue[0].length) || 0;
 
-      const moneyIndex = str.search(/\d{1,}\.\d\d\ /);
-      const moneyValue = str.match(/\d{1,}\.\d\d\ /);
+      const moneyIndex = str.search(/\d{1,}\.\d\d/);
+      const moneyValue = str.match(/\d{1,}\.\d\d/);
       const moneyLength = (moneyValue && moneyValue[0].length) || 0;
 
       let currDate = str.substring(0, dateIndex + dateLength).trim();
@@ -57,6 +58,7 @@ export class WithdrawalService {
         .substring(dateIndex + dateLength, moneyIndex + moneyLength)
         .trim();
       str = str.substring(moneyIndex - 2);
+      currMoney = currMoney.replace(',', '');
 
       const secondDateIndex = str.search(/\d\d\/\d\d/);
       let currName =
@@ -65,7 +67,6 @@ export class WithdrawalService {
           : str.substring(moneyIndex + moneyLength).trim();
 
       str = str.substring(secondDateIndex);
-
       dataArray.push({
         date: currDate,
         money: Number(currMoney),
@@ -232,7 +233,7 @@ export class WithdrawalService {
           break;
 
         //Paycheck
-        case text.includes('direct deposit'):
+        case text.includes('nexient'):
           commonArray[16].money += value.money;
           remove = true;
           break;

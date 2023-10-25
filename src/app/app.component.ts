@@ -54,15 +54,6 @@ export class AppComponent implements OnInit {
     this.initArrays();
   }
 
-  private seperateValues(data: string) {
-    const values = this.getDeposits(data);
-    this.withdrawal.processWithdrawals(values[0] + values[1]);
-    const withValues = this.withdrawal.parseWithdrawals();
-
-    this.message = withValues[1] as string;
-    this.dataArray = withValues[0] as data[];
-  }
-
   getDeposits(data: string) {
     const startIndex = data.indexOf(`Date Amount Description`);
     const endIndex = data.indexOf(
@@ -71,6 +62,19 @@ export class AppComponent implements OnInit {
     const deposits = data.substring(startIndex + 24, endIndex);
     const withdrawals = data.substring(endIndex);
     return [deposits, withdrawals];
+  }
+
+  private seperateValues(data: string) {
+    let withdraws = '';
+    let deposits = '';
+    const values = this.getDeposits(data);
+    withdraws = values[1].replace(/(\r\n|\n|\r)/gm, '');
+    deposits = values[0].replace(/(\r\n|\n|\r)/gm, '');
+    this.withdrawal.processWithdrawals(withdraws);
+    const withValues = this.withdrawal.parseWithdrawals(deposits);
+
+    this.message = withValues[1] as string;
+    this.dataArray = withValues[0] as data[];
   }
 
   private convertToCSV(arr: any) {
