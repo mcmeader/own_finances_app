@@ -14,9 +14,10 @@ export type data = {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  public message = '';
-  public dataArray: data[] = [];
-  public commonArray: data[] = [];
+  message = '';
+  fileName = '';
+  dataArray: data[] = [];
+  commonArray: data[] = [];
 
   @ViewChild('data') data!: HTMLInputElement;
 
@@ -27,8 +28,10 @@ export class AppComponent implements OnInit {
   }
 
   fileUpload(file: any) {
+    this.initArrays();
+    this.fileName = file?.target?.files[0]?.name;
+    this.fileName = this.fileName.replace('.txt', '');
     let fileString = '';
-
     let reader = new FileReader();
     reader.onloadend = (e) => {
       fileString = reader.result as string;
@@ -50,7 +53,7 @@ export class AppComponent implements OnInit {
     let blob = new Blob([this.convertToCSV(totalArray)], {
       type: 'text/csv;charset=utf-8',
     });
-    saveAs(blob, 'file.csv');
+    saveAs(blob, `${this.fileName}.csv`);
     this.initArrays();
   }
 
@@ -106,6 +109,12 @@ export class AppComponent implements OnInit {
       { date: '', money: 0, text: 'Haircut' },
       { date: '', money: 0, text: 'Medicine' },
       { date: '', money: 0, text: 'Paycheck' },
+      { date: '', money: 0, text: 'Gas' },
+      { date: '', money: 0, text: 'Cash Withdrawals' },
+      { date: '', money: 0, text: 'Car Maintenance' },
+      { date: '', money: 0, text: 'Car Wash' },
+      { date: '', money: 0, text: 'Random Deposits' },
+      { date: '', money: 0, text: 'Laundry' },
     ];
     this.dataArray = [];
     this.message = '';

@@ -1,6 +1,11 @@
 <div class="container">
   <div>
-    <input type="file" class="file-upload" (change)="fileUpload($event)" />
+    <input
+      style="width: 100%"
+      type="file"
+      class="file-upload"
+      (change)="fileUpload($event)"
+    />
   </div>
   <div>
     <button (click)="export()">Export</button>

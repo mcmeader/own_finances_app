@@ -43,7 +43,6 @@ export class WithdrawalService {
     let message;
     let str = deposits + this.withdrawals;
     let index = 0;
-    console.log('fff', str);
     do {
       const dateIndex = str.search(/\d\d\/\d\d\ /);
       const dateValue = str.match(/\d\d\/\d\d\ /);
@@ -74,6 +73,7 @@ export class WithdrawalService {
       });
       if (index === 100) {
         message = 'Error!';
+        console.log('Error!', str);
         setTimeout(() => (message = ''), 1000);
         break;
       }
@@ -131,7 +131,7 @@ export class WithdrawalService {
           break;
 
         //Patreon
-        case text.includes('*patreon*'):
+        case text.includes('patreon'):
           commonArray[6].money += value.money;
           remove = true;
           break;
@@ -148,6 +148,11 @@ export class WithdrawalService {
         case text.includes('walmart'):
         case text.includes('wm supercenter'):
         case text.includes('wal-mart'):
+        case text.includes('rite aid'):
+        case text.includes('walgreens'):
+        case text.includes('wholefds'):
+        case text.includes('grocery'):
+        case text.includes('meijer'):
           commonArray[8].money += value.money;
           remove = true;
           break;
@@ -185,6 +190,53 @@ export class WithdrawalService {
         case text.includes('tropical smoothie cafe'):
         case text.includes('kfc'):
         case text.includes('goodylfe'):
+        case text.includes('ci - s'):
+        case text.includes('jimmy john'):
+        case text.includes('arbor brewing'):
+        case text.includes('panera bread'):
+        case text.includes('snack soda vending'):
+        case text.includes('doordash'):
+        case text.includes('murdick'):
+        case text.includes('winery'):
+        case text.includes('sweeting'):
+        case text.includes('7-eleven'):
+        case text.includes('legs inn'):
+        case text.includes('sweetwaters'):
+        case text.includes('bobcatbonnies'):
+        case text.includes('white castle'):
+        case text.includes('zola bistro'):
+        case text.includes('chipotle'):
+        case text.includes('ice cream'):
+        case text.includes('pizza'):
+        case text.includes('cafe'):
+        case text.includes('kosmo'):
+        case text.includes('pizze'):
+        case text.includes('poke '):
+        case text.includes('wingstop'):
+        case text.includes('cottage inn'):
+        case text.includes('raja rani'):
+        case text.includes('maiz'):
+        case text.includes('vending'):
+        case text.includes('toarmina'):
+        case text.includes('food and beverage'):
+        case text.includes('market'):
+        case text.includes('indian'):
+        case text.includes('grill and bar'):
+        case text.includes('noodles'):
+        case text.includes('bandito'):
+        case text.includes('tomukun'):
+        case text.includes('jasmine bubble'):
+        case text.includes('popeye'):
+        case text.includes('hopcat'):
+        case text.includes('nahtahka'):
+        case text.includes('lucky garden'):
+        case text.includes('the hof'):
+        case text.includes('one stop mart'):
+        case text.includes('union rec'):
+        case text.includes('tim horton'):
+        case text.includes('ben & jerry'):
+        case text.includes('blimpy burger'):
+        case text.includes('bambu'):
           commonArray[9].money += value.money;
           remove = true;
           break;
@@ -193,6 +245,9 @@ export class WithdrawalService {
         case text.includes('pet supplies'):
         case text.includes('petco'):
         case text.includes('city pets'):
+        case text.includes('whittaker road animal'):
+        case text.includes('petsmart'):
+        case text.includes('fish docto'):
           commonArray[10].money += value.money;
           remove = true;
           break;
@@ -206,6 +261,7 @@ export class WithdrawalService {
 
         //Cards
         case text.includes('fun 4 all'):
+        case text.includes('golden rhino games'):
           commonArray[12].money += value.money;
           remove = true;
           break;
@@ -214,6 +270,9 @@ export class WithdrawalService {
         case text.includes('steam purchase'):
         case text.includes('ninja kiwi'):
         case text.includes('black tree gam'):
+        case text.includes('nintendo'):
+        case text.includes('steamgames'):
+        case text.includes('google *'):
           commonArray[13].money += value.money;
           remove = true;
           break;
@@ -235,6 +294,57 @@ export class WithdrawalService {
         //Paycheck
         case text.includes('nexient'):
           commonArray[16].money += value.money;
+          remove = true;
+          break;
+
+        //Gas
+        case text.includes('speedway'):
+        case text.includes('bp#'):
+        case text.includes('sunoco'):
+        case text.includes('petrol'):
+        case text.includes('circle k'):
+        case text.includes('shell service'):
+        case text.includes('citgo'):
+        case text.includes('mini mar'):
+        case text.includes('marathon'):
+        case text.includes('love'):
+          if (value.money > 20) {
+            commonArray[8].money += value.money;
+          } else {
+            commonArray[17].money += value.money;
+          }
+          remove = true;
+          break;
+
+        //Cash Withdrawals
+        case text.includes('withdrawal'):
+          commonArray[18].money += value.money;
+          remove = true;
+          break;
+
+        //Car Maintenance
+        case text.includes('main street motors'):
+          commonArray[19].money += value.money;
+          remove = true;
+          break;
+
+        //Car Wash
+        case text.includes('zazzle'):
+        case text.includes('mr bubble'):
+          commonArray[20].money += value.money;
+          remove = true;
+          break;
+
+        //Random Deposits
+        case text.includes('irs trea'):
+        case text.includes('reimbursement'):
+          commonArray[21].money += value.money;
+          remove = true;
+          break;
+
+        //Laundry
+        case text.includes('wash laundry mobile'):
+          commonArray[22].money += value.money;
           remove = true;
           break;
       }
